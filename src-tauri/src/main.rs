@@ -14,19 +14,17 @@ const MANUFACTURER_STRING: &str = "dutchen18@gmail.com";
 const PRODUCT_STRING: &str = "Lights";
 
 #[derive(Serialize, Deserialize)]
-struct RGB {
+struct Rgb {
     r: u8,
     g: u8,
     b: u8,
 }
 
-
 #[derive(Serialize, Deserialize)]
 struct LedColor {
     index: usize,
-    color: RGB,
+    color: Rgb,
 }
-
 
 const WIDTH: usize = 24;
 const HEIGHT: usize = 8;
@@ -46,8 +44,14 @@ fn find_device() -> Result<bool, String> {
         if device_desc.vendor_id() == VENDOR_ID && device_desc.product_id() == PRODUCT_ID {
             let device_handle = device.open().map_err(|e| e.to_string())?;
 
-            if device_handle.read_manufacturer_string_ascii(&device_desc).map_err(|e| e.to_string())? == MANUFACTURER_STRING
-                && device_handle.read_product_string_ascii(&device_desc).map_err(|e| e.to_string())? == PRODUCT_STRING
+            if device_handle
+                .read_manufacturer_string_ascii(&device_desc)
+                .map_err(|e| e.to_string())?
+                == MANUFACTURER_STRING
+                && device_handle
+                    .read_product_string_ascii(&device_desc)
+                    .map_err(|e| e.to_string())?
+                    == PRODUCT_STRING
             {
                 // Store the device handle, im guessing a global mutex or something would be best
                 return Ok(true);
@@ -103,7 +107,12 @@ fn get_device_status() -> Result<bool, &'static str> {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![find_device, update_led_color, update_firmware, get_device_status])
+        .invoke_handler(tauri::generate_handler![
+            find_device,
+            update_led_color,
+            update_firmware,
+            get_device_status
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
