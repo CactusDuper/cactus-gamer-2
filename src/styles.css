@@ -62,9 +62,8 @@ body {
 }
 
 #led-matrix .led.active {
-  box-shadow: 0 0 45px 10px var(--led-glow-color);
+  box-shadow: 0 0 var(--glow-size, 45px) var(--glow-intensity, 10px) var(--led-glow-color);
 }
-
 
 
 
@@ -325,4 +324,20 @@ button {
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE/Edge */
   user-select: none; /* Standard syntax */
+}
+
+
+
+
+.slider-container {
+  margin: 10px 0;
+}
+
+.slider-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.slider-container input[type="range"] {
+  width: 100%;
 }

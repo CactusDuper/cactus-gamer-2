@@ -25,17 +25,34 @@ async function invokeTauri(command, args) {
 }
 
 
+function updateGlowEffect() {
+  const glowSize = document.getElementById('glow-size-slider').value;
+  const glowIntensity = document.getElementById('glow-intensity-slider').value;
 
+  // Update the CSS variable for the glow effect
+  const ledMatrix = document.getElementById('led-matrix');
+  ledMatrix.style.setProperty('--glow-size', `${glowSize}px`);
+  ledMatrix.style.setProperty('--glow-intensity', `${glowIntensity}px`);
+}
 
 
 document.addEventListener('DOMContentLoaded', async () => {
   createLedMatrix();
+  
   const deviceFound = await findDevice();
   if (deviceFound) {
     console.log('Device found');
   } else {
     console.log('Device not found');
   }
+
+    const glowSizeSlider = document.getElementById('glow-size-slider');
+    const glowIntensitySlider = document.getElementById('glow-intensity-slider');
+
+    glowSizeSlider.addEventListener('input', updateGlowEffect);
+    glowIntensitySlider.addEventListener('input', updateGlowEffect);
+
+    updateGlowEffect();
 });
 
 document.querySelectorAll('.sidebar-button').forEach(button => {

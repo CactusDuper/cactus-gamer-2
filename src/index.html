@@ -23,10 +23,18 @@
           <input type="color" id="color-picker">
         </div>
         <div id="settings-window" class="window hidden">
-            <h1>Settings</h1>
-            <button id="update-firmware">Update Firmware</button>
-            <div id="device-status">Device Status: <span id="status-display">Unknown</span></div>
-        </div>
+          <h1>Settings</h1>
+          <div class="slider-container">
+              <label for="glow-size-slider">Glow Size:</label>
+              <input type="range" id="glow-size-slider" min="0" max="100" value="45">
+          </div>
+          <div class="slider-container">
+              <label for="glow-intensity-slider">Glow Intensity:</label>
+              <input type="range" id="glow-intensity-slider" min="0" max="100" value="10">
+          </div>
+          <button id="update-firmware">Update Firmware</button>
+          <div id="device-status">Device Status: <span id="status-display">Unknown</span></div>
+      </div>
     </div>
 </body>
 </html>
