@@ -55,14 +55,12 @@ addEventListener(toggleButton, 'click', () => {
 /* led matrix related stuff */
 function handleLedMouseDown(index) {
   isMouseDown = true;
-  const colorPicker = getElementById('color-picker');
-  updateLedColor(index, colorPicker.value);
+  updateLedColor(index);
 }
 
 function handleLedMouseOver(index) {
   if (isMouseDown) {
-    const colorPicker = getElementById('color-picker');
-    updateLedColor(index, colorPicker.value);
+    updateLedColor(index);
   }
 }
 
@@ -79,6 +77,11 @@ async function updateLedColor(index) {
   const g = parseInt(color.substr(3, 2), 16);
   const b = parseInt(color.substr(5, 2), 16);
 
+  const ledColor = {
+    index: index,
+    color: { r, g, b }
+  };
+
   if (color !== '#000000') {
     console.log(color);
     led.classList.add('active');
@@ -87,7 +90,7 @@ async function updateLedColor(index) {
     led.classList.remove('active');
   }
 
-  await invokeTauri('update_led_color', { index: index, color: { r, g, b } });
+  await invokeTauri('update_led_color', { ledColor });
 }
 
 function createLedMatrix() {
