@@ -19,10 +19,12 @@
   --button-color: #646cff; /* Red tint for buttons */
   --button-hover-color: #535bf2; /* Darker red for button hover */
 
-  --led-off-color: #333; /* Dark color for LED off state */
-  --led-border-color: #444; /* LED border color */
+  --led-off-color: #000000; /* Dark color for LED off state */
+  --led-border-color: #8a8a8a; /* LED border color */
   --sidebar-width: 200px; /* Sidebar width */
   --sidebar-collapsed-width: 60px; /* Sidebar collapsed width */
+
+  --led-glow-color: #000000; /* Default glow color */
 }
 
 body {
@@ -33,32 +35,68 @@ body {
 }
 
 
-#led-matrix .led {
-  /* Default off-state for LEDs */
-  background-color: #222;
-  border: 1px solid #111;
+#led-matrix {
+  display: grid;
+  grid-template-columns: repeat(24, 5mm);
+  grid-template-rows: repeat(8, 5mm);
+  gap: 7mm;
+  justify-items: center;
+  align-items: center;
 }
+
+#led-matrix .led {
+  position: relative;
+  top: 5mm;
+  left: 25mm;
+  z-index: 2; /* Lower than overlay image */
+  /* Default off-state for LEDs */
+  width: 5mm;
+  height: 5mm;
+  background-color: var(--led-off-color);
+  border: 1px solid var(--led-border-color);
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s ease;
+
+  border-radius: 50%; /* Make the LEDs circular */
+}
+
+#led-matrix .led.active {
+  box-shadow: 0 0 45px 10px var(--led-glow-color);
+}
+
+
+
 
 #color-picker {
   /* Styles to fit the dark theme */
   background-color: var(--primary-color);
   border-color: var(--accent-color);
   color: var(--text-color);
+  cursor: pointer;
+  margin-top: 10mm;
 }
 
+.color-picker-label {
+  margin-top: 1rem;
+  color: var(--text-color);
+}
 
 
 .button {
   color: var(--text-color);
   background-color: var(--button-color);
   border: 1px solid var(--accent-color);
+  cursor: pointer;
 }
 
 .button:hover {
   background-color: var(--button-hover-color);
+  border-color: #396cd8;
 }
 
-.button:active {
+button:active {
+  border-color: #396cd8;
   background-color: #e8e8e8;
 }
 
@@ -107,17 +145,7 @@ button {
   outline: none;
 }
 
-button {
-  cursor: pointer;
-}
 
-button:hover {
-  border-color: #396cd8;
-}
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
-}
 
 #greet-input {
   margin-right: 5px;
@@ -126,7 +154,7 @@ button:active {
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
-    background-color: #2f2f2f;
+    background-color: var(--primary-color);
   }
 
   a:hover {
@@ -143,22 +171,6 @@ button:active {
   }
 }
 
-#led-matrix {
-  display: grid;
-  grid-template-columns: repeat(24, 5mm);
-  grid-template-rows: repeat(8, 5mm);
-  gap: 1mm;
-}
-
-.led {
-  width: 5mm;
-  height: 5mm;
-  background-color: var(--led-off-color);
-  border: 1px solid var(--led-border-color);
-  box-sizing: border-box;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
 
 
 /* Styles for the sidebar and content layout */
@@ -175,43 +187,6 @@ button:active {
   transition: width 0.3s;
 }
 
-.sidebar-button {
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 18px;
-  background-color: var(--button-color);
-  border: none;
-  color: var(--text-color);
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.sidebar-button:hover {
-  background-color: var(--button-hover-color);
-}
-
-.content {
-  padding : 100px;
-  transition: margin-left 0.3s;
-}
-
-.window {
-  background-color: var(--primary-color);
-  border: none;
-  padding: 20px;
-  color: var(--text-color);
-  display: none;
-}
-
-.window.active {
-  border-left: 4px solid var(--accent-color);
-  display: block;
-}
-
-
-.hidden {
-  display: none;
-}
 
 .sidebar-toggle {
   font-size: 24px;
@@ -223,9 +198,6 @@ button:active {
   margin-bottom: 20px;
 }
 
-.icon {
-  display: none; /* Hide icons by default */
-}
 
 .sidebar.collapsed .text {
   display: none; /* Hide text when sidebar is collapsed */
@@ -237,18 +209,6 @@ button:active {
 
 .sidebar.collapsed {
   width: var(--sidebar-collapsed-width); /* Smaller width when collapsed */
-}
-
-.content.shifted {
-  margin-left: 140px; /* Shift content when sidebar is expanded */
-}
-
-
-.app-header {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  padding: 1rem;
-  text-align: center;
 }
 
 .sidebar-nav {
@@ -275,24 +235,94 @@ button:active {
   background-color: var(--button-hover-color);
 }
 
-.led-matrix {
-  display: grid;
-  grid-template-columns: repeat(24, 1fr);
-  grid-template-rows: repeat(8, 1fr);
-  gap: 0.25rem;
-  justify-items: center;
-  align-items: center;
-  padding: 1rem;
-}
 
-.color-picker-label {
-  display: block;
-  margin-top: 1rem;
+
+
+
+.sidebar-button {
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  background-color: var(--button-color);
+  border: none;
   color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.color-picker {
-  width: 100%;
-  max-width: 200px;
-  cursor: pointer;
+.sidebar-button:hover {
+  background-color: var(--button-hover-color);
+}
+
+
+
+
+.content {
+  width: 800px; /* Set the fixed width for the content area */
+  margin: 0 auto; /* Center the content area */
+  padding : 100px;
+  transition: margin-left 0.3s;
+}
+
+.window {
+  background-color: var(--primary-color);
+  border: none;
+  padding: 20px;
+  color: var(--text-color);
+  display: none;
+}
+
+.window.active {
+  border-left: 4px solid var(--accent-color);
+  display: block;
+}
+
+
+.hidden {
+  display: none;
+}
+
+
+
+.icon {
+  display: none; /* Hide icons by default */
+}
+
+
+
+.content.shifted {
+  margin-left: var(--sidebar-width); /* Shift content when sidebar is expanded */
+}
+
+
+.app-header {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  padding: 1rem;
+  text-align: center;
+}
+
+
+
+
+#led-matrix-overlay {
+  position: relative;
+  width: 312mm; /* Set the fixed width based on the actual image size */
+  height: 111mm; /* Set the fixed height based on the actual image size */
+  margin: 0 auto; /* Center the LED matrix */
+}
+
+#overlay-image {
+  position: absolute;
+  top: -0.4mm;
+  left: 0;
+  z-index: 1;
+  width: 312mm; /* Set the fixed width to match the actual image size */
+  height: 111mm; /* Set the fixed height to match the actual image size */
+  pointer-events: none; /* so click/mouse events go to LEDs underneath */
+
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE/Edge */
+  user-select: none; /* Standard syntax */
 }

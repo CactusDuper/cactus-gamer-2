@@ -79,7 +79,15 @@ async function updateLedColor(index) {
   const g = parseInt(color.substr(3, 2), 16);
   const b = parseInt(color.substr(5, 2), 16);
 
-  await invokeTauri('update_led_color', { index: i, color: { r, g, b } });
+  if (color !== '#000000') {
+    console.log(color);
+    led.classList.add('active');
+    led.style.setProperty('--led-glow-color', color); // Set the glow color
+  } else {
+    led.classList.remove('active');
+  }
+
+  await invokeTauri('update_led_color', { index: index, color: { r, g, b } });
 }
 
 function createLedMatrix() {

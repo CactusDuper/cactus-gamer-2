@@ -13,11 +13,14 @@
         <button class="sidebar-button" data-target="main-window"><span class="icon">&#8962;</span><span class="text">Main</span></button>
         <button class="sidebar-button" data-target="settings-window"><span class="icon">&#9881;</span><span class="text">Settings</span></button>
     </div>
-    <div class="content shifted">
+    <div class="content">
         <div id="main-window" class="window">
             <h1>PCIe RGB LED Control</h1>
-            <div id="led-matrix"></div>
-            <input type="color" id="color-picker">
+            <div id="led-matrix-overlay">
+              <div id="led-matrix"></div>
+              <img src="assets/PCIeRenderHoles.png" alt="LED Overlay" id="overlay-image" />
+          </div>
+          <input type="color" id="color-picker">
         </div>
         <div id="settings-window" class="window hidden">
             <h1>Settings</h1>
