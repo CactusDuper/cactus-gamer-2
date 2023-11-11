@@ -28,9 +28,14 @@ async function invokeTauri(command, args) {
 
 
 
-/* more generic stuff */
 document.addEventListener('DOMContentLoaded', async () => {
   createLedMatrix();
+  const deviceFound = await findDevice();
+  if (deviceFound) {
+    console.log('Device found');
+  } else {
+    console.log('Device not found');
+  }
 });
 
 document.querySelectorAll('.sidebar-button').forEach(button => {
