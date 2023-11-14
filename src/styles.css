@@ -1,23 +1,27 @@
 :root {
+  /* Typography */
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
 
+  /* Colors */
   color: #0f0f0f;
   background-color: #f6f6f6;
 
+  /* Text rendering and adjustments */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --primary-color: #333; /* Dark grey for backgrounds */
-  --accent-color: #ff3e3e; /* Red accent color */
-  --text-color: #f6f6f6; /* Light grey for text */
-  --button-color: #646cff; /* Red tint for buttons */
-  --button-hover-color: #535bf2; /* Darker red for button hover */
+  /* Custom Colors */
+  --primary-color: #1a1a1a; /* Dark background */
+  --accent-color: #3498db; /* Blue accent color */
+  --text-color: #ecf0f1; /* Light text color */
+  --button-color: #2ecc71; /* Green tint for buttons */
+  --button-hover-color: #27ae60; /* Darker green for button hover */
 
   --led-off-color: #000000; /* Dark color for LED off state */
   --led-border-color: #8a8a8a; /* LED border color */
@@ -27,6 +31,7 @@
   --led-glow-color: #000000; /* Default glow color */
 }
 
+/* Body Styles */
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
@@ -34,10 +39,10 @@ body {
   color: var(--text-color);
 }
 
-
+/* LED Matrix Styles */
 #led-matrix {
   display: grid;
-  grid-template-columns: repeat(24, 5mm);
+  grid-template-columns: repeat(22, 5mm);
   grid-template-rows: repeat(8, 5mm);
   gap: 7mm;
   justify-items: center;
@@ -45,11 +50,11 @@ body {
 }
 
 #led-matrix .led {
+  /* LED Styles */
   position: relative;
   top: 5mm;
   left: 25mm;
-  z-index: 2; /* Lower than overlay image */
-  /* Default off-state for LEDs */
+  z-index: 2;
   width: 5mm;
   height: 5mm;
   background-color: var(--led-off-color);
@@ -57,8 +62,7 @@ body {
   box-sizing: border-box;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s ease;
-
-  border-radius: 50%; /* Make the LEDs circular */
+  border-radius: 50%;
 }
 
 #led-matrix .led.active {
@@ -67,8 +71,8 @@ body {
 
 
 
+/* Color Picker Styles */
 #color-picker {
-  /* Styles to fit the dark theme */
   background-color: var(--primary-color);
   border-color: var(--accent-color);
   color: var(--text-color);
@@ -82,16 +86,18 @@ body {
 }
 
 
+/* Button Styles */
 .button {
-  color: var(--text-color);
-  background-color: var(--button-color);
-  border: 1px solid var(--accent-color);
-  cursor: pointer;
+  padding: 0.8em 1.5em;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
 .button:hover {
   background-color: var(--button-hover-color);
   border-color: #396cd8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 button:active {
@@ -101,6 +107,7 @@ button:active {
 
 
 
+/* Container Styles */
 .container {
   margin: 0;
   padding-top: 10vh;
@@ -115,6 +122,8 @@ button:active {
   justify-content: center;
 }
 
+
+/* Link Styles */
 a {
   font-weight: 500;
   color: #646cff;
@@ -125,10 +134,14 @@ a:hover {
   color: #535bf2;
 }
 
+
+/* Header Styles */
 h1 {
   text-align: center;
 }
 
+
+/* Input and Button Styles */
 input,
 button {
   border-radius: 8px;
@@ -146,10 +159,8 @@ button {
 
 
 
-#greet-input {
-  margin-right: 5px;
-}
 
+/* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
@@ -170,9 +181,7 @@ button {
   }
 }
 
-
-
-/* Styles for the sidebar and content layout */
+/* Sidebar and Content Layout Styles */
 .sidebar {
   position: fixed;
   left: 0;
@@ -182,37 +191,48 @@ button {
   background-color: var(--primary-color);
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 1.5rem;
   transition: width 0.3s;
+  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
-
 
 .sidebar-toggle {
-  font-size: 24px;
+  font-size: 1.5rem;
   background: none;
   border: none;
-  background-color: var(--accent-color);
-  color: var(--text-color);
+  color: var(--accent-color);
   cursor: pointer;
-  margin-bottom: 20px;
+  padding: 0.5rem 1rem;
+  display: block;
+  width: 100%;
+  text-align: left;
+  transition: color 0.2s;
 }
 
+.sidebar-toggle:hover {
+  color: var(--button-hover-color);
+}
 
 .sidebar.collapsed .text {
-  display: none; /* Hide text when sidebar is collapsed */
+  display: none;
 }
 
 .sidebar.collapsed .icon {
-  display: inline; /* Show icons when sidebar is collapsed */
+  display: inline;
 }
 
 .sidebar.collapsed {
-  width: var(--sidebar-collapsed-width); /* Smaller width when collapsed */
+  width: var(--sidebar-collapsed-width);
+}
+
+.sidebar.collapsed .sidebar-toggle {
+  justify-content: center;
+  transform: rotate(180deg);
 }
 
 .sidebar-nav {
-  display: flex;
-  flex-direction: column;
+  flex-grow: 1;
 }
 
 .sidebar-menu {
@@ -221,46 +241,48 @@ button {
   margin: 0;
 }
 
-.sidebar-link {
-  display: block;
-  padding: 0.5rem 1rem;
+.sidebar-item + .sidebar-item {
+  margin-top: 0.5rem;
+}
+
+.sidebar-item .sidebar-link {
+  display: flex;
+  padding: 0.75rem 1rem;
   color: var(--text-color);
   text-decoration: none;
-  transition: background-color 0.3s;
-}
-
-.sidebar-link:hover,
-.sidebar-link:focus {
-  background-color: var(--button-hover-color);
-}
-
-
-
-
-
-.sidebar-button {
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 18px;
-  background-color: var(--button-color);
+  background-color: transparent;
   border: none;
-  color: var(--text-color);
-  cursor: pointer;
-  transition: background-color 0.3s;
+  width: 100%;
+  text-align: left;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s, color 0.2s;
+  align-items: center;
 }
 
-.sidebar-button:hover {
-  background-color: var(--button-hover-color);
+.sidebar-item .sidebar-link:hover,
+.sidebar-item .sidebar-link:active {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+}
+
+.sidebar.collapsed .sidebar-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  text-align: center;
 }
 
 
 
-
+/* Content Styles */
 .content {
-  width: 800px; /* Set the fixed width for the content area */
-  margin: 0 auto; /* Center the content area */
-  padding : 100px;
+  width: 800px;
+  margin-left: var(--sidebar-width);
+  padding: 100px;
   transition: margin-left 0.3s;
+  position: relative;
 }
 
 .window {
@@ -268,32 +290,38 @@ button {
   border: none;
   padding: 20px;
   color: var(--text-color);
-  display: none;
+  display: flex;
+  transform: translateY(20px);
+  transition: opacity 1.5s, visibility 0s;
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  width: 100%;
 }
 
 .window.active {
   border-left: 4px solid var(--accent-color);
   display: block;
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
 }
 
-
 .hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 1s, opacity 0s linear;
+}
+
+.icon {
   display: none;
 }
 
-
-
-.icon {
-  display: none; /* Hide icons by default */
-}
-
-
-
 .content.shifted {
-  margin-left: var(--sidebar-width); /* Shift content when sidebar is expanded */
+  margin-left: var(--sidebar-collapsed-width);
 }
 
-
+/* App Header Styles */
 .app-header {
   background-color: var(--primary-color);
   color: var(--text-color);
@@ -301,14 +329,12 @@ button {
   text-align: center;
 }
 
-
-
-
+/* LED Matrix Overlay Styles */
 #led-matrix-overlay {
   position: relative;
-  width: 312mm; /* Set the fixed width based on the actual image size */
-  height: 111mm; /* Set the fixed height based on the actual image size */
-  margin: 0 auto; /* Center the LED matrix */
+  width: 312mm;
+  height: 111mm;
+  margin: 0 auto;
 }
 
 #overlay-image {
@@ -316,19 +342,17 @@ button {
   top: -0.4mm;
   left: 0;
   z-index: 1;
-  width: 312mm; /* Set the fixed width to match the actual image size */
-  height: 111mm; /* Set the fixed height to match the actual image size */
-  pointer-events: none; /* so click/mouse events go to LEDs underneath */
-
-  -webkit-user-select: none; /* Chrome/Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE/Edge */
-  user-select: none; /* Standard syntax */
+  width: 312mm;
+  height: 111mm;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 
-
-
+/* Slider Styles */
 .slider-container {
   margin: 10px 0;
 }
@@ -339,5 +363,25 @@ button {
 }
 
 .slider-container input[type="range"] {
-  width: 100%;
+  appearance: none;
+  height: 5px;
+  border-radius: 5px;
+  background: #ddd;
+  outline: none;
 }
+
+.slider-container input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--button-color);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.slider-container input[type="range"]:hover::-webkit-slider-thumb {
+  background-color: var(--button-hover-color);
+}
+
+

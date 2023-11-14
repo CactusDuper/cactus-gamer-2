@@ -55,19 +55,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateGlowEffect();
 });
 
-document.querySelectorAll('.sidebar-button').forEach(button => {
-  addEventListener(button, 'click', () => {
-    const target = button.getAttribute('data-target');
-    document.querySelectorAll('.window').forEach(window => {
-      removeClass(window, 'active');
-    });
-    addClass(getElementById(target), 'active');
-  });
-});
+
 
 addEventListener(toggleButton, 'click', () => {
   toggleClass(sidebar, 'collapsed');
   toggleClass(content, 'shifted');
+});
+
+
+document.querySelectorAll('.sidebar-link').forEach(button => {
+  addEventListener(button, 'click', () => {
+    const targetId = button.getAttribute('data-target');
+
+    document.querySelectorAll('.window').forEach(window => {
+      if (window.id === targetId) {
+        removeClass(window, 'hidden');
+        addClass(window, 'active');
+      } else {
+        addClass(window, 'hidden');
+        removeClass(window, 'active');
+      }
+    });
+  });
 });
 
 
@@ -117,7 +126,7 @@ async function updateLedColor(index) {
 
 function createLedMatrix() {
   const ledMatrix = getElementById('led-matrix');
-  for (let i = 0; i < 8 * 24; i++) {
+  for (let i = 0; i < 8 * 22; i++) {
     const led = document.createElement('div');
     led.classList.add('led');
     led.dataset.index = i;
