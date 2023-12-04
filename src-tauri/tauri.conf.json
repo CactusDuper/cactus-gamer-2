@@ -13,6 +13,14 @@
   "tauri": {
     "allowlist": {
       "all": false,
+      "dialog": {
+        "all": true,
+        "ask": true,
+        "confirm": true,
+        "message": true,
+        "open": true,
+        "save": true
+      },
       "shell": {
         "all": false,
         "open": true
@@ -36,10 +44,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": false,
+        "resizable": true,
         "title": "RGB-PCIe-LED-Controller",
-        "width": 1650,
-        "height": 800
+        "width": 1450,
+        "height": 900
       }
     ]
   }

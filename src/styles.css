@@ -17,18 +17,28 @@
   -webkit-text-size-adjust: 100%;
 
   /* Custom Colors */
-  --primary-color: #1a1a1a; /* Dark background */
-  --accent-color: #3498db; /* Blue accent color */
-  --text-color: #ecf0f1; /* Light text color */
-  --button-color: #2ecc71; /* Green tint for buttons */
-  --button-hover-color: #27ae60; /* Darker green for button hover */
+  --primary-color: #1a1a1a;
+  /* Dark background */
+  --accent-color: #3498db;
+  /* Blue accent color */
+  --text-color: #ecf0f1;
+  /* Light text color */
+  --button-color: #2ecc71;
+  /* Green tint for buttons */
+  --button-hover-color: #27ae60;
+  /* Darker green for button hover */
 
-  --led-off-color: #000000; /* Dark color for LED off state */
-  --led-border-color: #8a8a8a; /* LED border color */
-  --sidebar-width: 200px; /* Sidebar width */
-  --sidebar-collapsed-width: 60px; /* Sidebar collapsed width */
+  --led-off-color: #000000;
+  /* Dark color for LED off state */
+  --led-border-color: #8a8a8a;
+  /* LED border color */
+  --sidebar-width: 200px;
+  /* Sidebar width */
+  --sidebar-collapsed-width: 60px;
+  /* Sidebar collapsed width */
 
-  --led-glow-color: #000000; /* Default glow color */
+  --led-glow-color: #000000;
+  /* Default glow color */
 }
 
 /* Body Styles */
@@ -40,7 +50,7 @@ body {
 }
 
 /* LED Matrix Styles */
-#led-matrix {
+.led-matrix {
   display: grid;
   grid-template-columns: repeat(22, 5mm);
   grid-template-rows: repeat(8, 5mm);
@@ -49,7 +59,7 @@ body {
   align-items: center;
 }
 
-#led-matrix .led {
+.led-matrix .led {
   /* LED Styles */
   position: relative;
   top: 5mm;
@@ -65,14 +75,14 @@ body {
   border-radius: 50%;
 }
 
-#led-matrix .led.active {
+.led-matrix .led.active {
   box-shadow: 0 0 var(--glow-size, 45px) var(--glow-intensity, 10px) var(--led-glow-color);
 }
 
 
 
 /* Color Picker Styles */
-#color-picker {
+.color-picker {
   background-color: var(--primary-color);
   border-color: var(--accent-color);
   color: var(--text-color);
@@ -176,6 +186,7 @@ button {
     color: #ffffff;
     background-color: #0f0f0f98;
   }
+
   button:active {
     background-color: #0f0f0f69;
   }
@@ -188,6 +199,7 @@ button {
   top: 0;
   width: var(--sidebar-width);
   height: 100%;
+  z-index: 10; /* Ensure the sidebar has a higher z-index than the content */
   background-color: var(--primary-color);
   display: flex;
   flex-direction: column;
@@ -195,6 +207,10 @@ button {
   transition: width 0.3s;
   box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .sidebar-toggle {
@@ -241,7 +257,7 @@ button {
   margin: 0;
 }
 
-.sidebar-item + .sidebar-item {
+.sidebar-item+.sidebar-item {
   margin-top: 0.5rem;
 }
 
@@ -283,6 +299,7 @@ button {
   padding: 100px;
   transition: margin-left 0.3s;
   position: relative;
+  z-index: 1; /* Lower z-index than the sidebar so that the sidebar stays on top */
 }
 
 .window {
@@ -290,13 +307,19 @@ button {
   border: none;
   padding: 20px;
   color: var(--text-color);
-  display: flex;
+  display: none;
   transform: translateY(20px);
-  transition: opacity 1.5s, visibility 0s;
+  transition: opacity 1.5s, visibility 0s 1.5s;
   position: absolute;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none; /* Disable interactions */
   width: 100%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
 }
 
 .window.active {
@@ -304,13 +327,17 @@ button {
   display: block;
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto; /* Enable interactions */
   visibility: visible;
+  transition: opacity 1.5s, visibility 0s 0s; /* No delay for visibility when appearing */
 }
 
 .hidden {
   visibility: hidden;
+  display: block;
   opacity: 0;
   transition: visibility 0s linear 1s, opacity 0s linear;
+  height: 5%;
 }
 
 .icon {
@@ -350,38 +377,4 @@ button {
   -ms-user-select: none;
   user-select: none;
 }
-
-
-/* Slider Styles */
-.slider-container {
-  margin: 10px 0;
-}
-
-.slider-container label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.slider-container input[type="range"] {
-  appearance: none;
-  height: 5px;
-  border-radius: 5px;
-  background: #ddd;
-  outline: none;
-}
-
-.slider-container input[type="range"]::-webkit-slider-thumb {
-  appearance: none;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: var(--button-color);
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.slider-container input[type="range"]:hover::-webkit-slider-thumb {
-  background-color: var(--button-hover-color);
-}
-
 
