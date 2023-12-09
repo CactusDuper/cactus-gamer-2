@@ -24,6 +24,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7
+          run_install: false
+
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
