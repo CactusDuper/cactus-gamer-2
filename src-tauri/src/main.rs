@@ -361,7 +361,7 @@ fn process_image(serial_number:String, file_path: String, width: usize, height: 
         let index = calculate_led_index(y as usize, x as usize, height);
         led_data[index] = rgb;
     }
-    if(testing){
+    if testing {
         return Ok(led_data);
     }
     update_led_buffer(serial_number,&led_data).map_err(|e| e.to_string())?;
