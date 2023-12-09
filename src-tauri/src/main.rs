@@ -331,7 +331,7 @@ fn get_temperature(serial_number: String) -> Result<[f32; 4], String> {
 }
 
 #[tauri::command(rename_all = "snake_case")]
-fn process_image(serial_number:String, file_path: String, width: usize, height: usize) -> Result<Vec<Rgb>, String> {
+fn process_image(serial_number:String, file_path: String, width: usize, height: usize, testing: bool) -> Result<Vec<Rgb>, String> {
     let img = match image::open(file_path) {
         Ok(img) => img,
         Err(_) => return Err("Could not open the image file.".to_string()),
@@ -361,7 +361,9 @@ fn process_image(serial_number:String, file_path: String, width: usize, height: 
         let index = calculate_led_index(y as usize, x as usize, height);
         led_data[index] = rgb;
     }
-
+    if(testing){
+        return Ok(led_data);
+    }
     update_led_buffer(serial_number,&led_data).map_err(|e| e.to_string())?;
     Ok(led_data)
 }

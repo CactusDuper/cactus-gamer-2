@@ -46,8 +46,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "RGB-PCIe-LED-Controller",
-        "width": 1450,
-        "height": 900
+        "width": 1550,
+        "height": 980
       }
     ]
   }

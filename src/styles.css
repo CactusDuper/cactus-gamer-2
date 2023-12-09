@@ -378,3 +378,19 @@ button {
   user-select: none;
 }
 
+.sidebar .sidebar-icon {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-text {
+  display: none;
+}
+
+.sidebar.collapsed .sidebar-icon {
+  display: block;
+}
+
+.selected-tool {
+  border: 2px solid var(--button-color); /* Indicate selected tool */
+  background-color: var(--button-hover-color);
+}

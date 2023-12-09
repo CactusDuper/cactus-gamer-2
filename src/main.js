@@ -9,6 +9,7 @@ const addClass = (element, className) => element.classList.add(className);
 const handleError = (error, message) => console.error(`${message} ${error}`);
 
 const deviceMapping = {};
+const currentToolPerDevice = {};
 
 let totalDevices = 0;
 
@@ -211,13 +212,26 @@ function createDevices(deviceCount) {
     // Add a sidebar button for each device
     const button = document.createElement('button');
     button.className = 'sidebar-link';
-    button.textContent = `Device ${i}`;
+
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'sidebar-icon';
+    iconSpan.textContent = '🏠';
+
+    const textSpan = document.createElement('span');
+    textSpan.className = 'sidebar-text';
+    textSpan.textContent = `Device ${i}`;
+
+    button.appendChild(iconSpan);
+    button.appendChild(textSpan);
+
     button.dataset.target = `device-window-${i}`;
     sidebarItem.appendChild(button);
 
     // Create a device window for each device
     const deviceWindow = createDeviceWindow(i);
     content.appendChild(deviceWindow);
+
+    currentToolPerDevice[i] = 'pencil';
   }
   
   // Set event listeners for newly created sidebar links
@@ -237,9 +251,9 @@ function createDeviceWindow(deviceNumber) {
       </div>
       <label for="color-picker-${deviceNumber}">Color picker:</label>
       <input type="color" id="color-picker-${deviceNumber}" class="color-picker">
-      <button id="pencil-tool">Pencil</button>
-      <button id="brush-tool">Brush</button>
-      <button id="eraser-tool">Eraser</button>
+      <button id="pencil-tool-${deviceNumber}" class="selected-tool">Pencil</button>
+      <button id="eraser-tool-${deviceNumber}">Eraser</button>
+      <button id="clear-board-${deviceNumber}">Clear Board</button>
       <button id="load-image-device-${deviceNumber}" class="load-image-button">Load Image</button>
       <div></div>
       <button id="save-layout-${deviceNumber}">Save Layout</button>
@@ -252,13 +266,14 @@ function createDeviceWindow(deviceNumber) {
       <h1>Settings</h1>
       <button id="update-firmware-${deviceNumber}">Update Firmware</button>
       <div id="device-status-${deviceNumber}">Device Status: <span>Unknown</span></div>
-      <input type="text" id="device-count" min="1" max="100" value="1">Change name
     </div>
   `.trim();
   const deviceWindow = template.content.firstChild;
 
   const loadImageButton = deviceWindow.querySelector(`#load-image-device-${deviceNumber}`);
   loadImageButton.addEventListener('click', () => loadImageAndDisplay(deviceNumber));
+
+
 
   return deviceWindow;
 }
@@ -294,17 +309,96 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 });
 
+function clearBoard(deviceNumber) {
+  const leds = document.querySelectorAll(`#led-matrix-${deviceNumber} .led`);
+  leds.forEach(led => {
+    led.style.backgroundColor = '#000000';
+    led.classList.remove('active');
+  });
 
+  // add rust clear
+  const clear_color = { r: 0, g: 0, b: 0 };
+  updateLedBuffer(deviceNumber, clear_color); // Update this with appropriate backend command
+}
+
+
+function setupTestingDeviceButtonEventListeners(deviceNumber) {
+
+  setFriendlyNameAndRegister("12345", "testing", 1);
+
+  const saveButton = document.getElementById(`save-layout-${deviceNumber}`);
+  saveButton.addEventListener('click', async () => {
+    await saveLedLayout(deviceNumber);
+  });
+
+  const loadButton = document.getElementById(`load-layout-${deviceNumber}`);
+  loadButton.addEventListener('click', async () => {
+    await loadLedLayout(deviceNumber);
+  });
+
+  const tempButton = document.getElementById(`read-temps-${deviceNumber}`);
+  tempButton.addEventListener('click', async () => {
+    await readTemperatures(deviceNumber); // Call your new function
+  });
+
+  const updateFirmwareButton = document.getElementById(`update-firmware-${deviceNumber}`);
+  updateFirmwareButton.addEventListener('click', async () => {
+    try {
+      await invokeTauri('update_firmware', {serial_number});
+      alert('Firmware updated successfully!');
+    } catch (error) {
+      handleError(error, 'Error updating firmware:');
+      alert('Failed to update firmware.');
+    }
+  });
+
+
+  const clearBoardButton = document.getElementById(`clear-board-${deviceNumber}`);
+  clearBoardButton.addEventListener('click', () => clearBoard(deviceNumber));
+
+  const pencilButton = document.getElementById(`pencil-tool-${deviceNumber}`);
+  pencilButton.addEventListener('click', () => selectTool(deviceNumber, 'pencil'));
+
+  const eraserButton = document.getElementById(`eraser-tool-${deviceNumber}`);
+  eraserButton.addEventListener('click', () => selectTool(deviceNumber, 'eraser'));
+
+
+
+}
 
 async function createDeviceUI(deviceCount) {
-  createDevices(deviceCount); // Devices and related windows will be created here
+  createDevices(deviceCount + 1); // Devices and related windows will be created here
 
   // Check for and set up all devices
   for (let i = 1; i <= deviceCount; i++) {
     createLedMatrix(i);
     setupDeviceButtonEventListeners(i);
   }
+
+  const testingDeviceNumber = deviceCount + 1; // The testing device has the next number
+  createLedMatrix(testingDeviceNumber);
+  setupTestingDeviceButtonEventListeners(testingDeviceNumber);
 }
+
+
+
+function selectTool(deviceNumber, toolName) {
+  currentToolPerDevice[deviceNumber] = toolName;
+
+  const pencilButton = document.getElementById(`pencil-tool-${deviceNumber}`);
+  const eraserButton = document.getElementById(`eraser-tool-${deviceNumber}`);
+  
+  if (toolName === 'pencil') {
+    pencilButton.classList.add('selected-tool');
+    eraserButton.classList.remove('selected-tool');
+  } else {
+    eraserButton.classList.add('selected-tool');
+    pencilButton.classList.remove('selected-tool');
+  }
+}
+
+
+
 
 document.getElementById('refresh-devices').addEventListener('click', async () => {
   try {
@@ -351,7 +445,11 @@ async function loadImageAndDisplay(deviceNumber) {
   const height = 8;  // Height of the LED matrix
   try {
     const serial_number = serialNumberFromDeviceNumber(deviceNumber); // Get the serial number from the device number
-    const res = await invoke('process_image', { serial_number, file_path, width, height }); // Same as before
+    var testing = false;
+    if(serial_number==="12345") {
+      testing = true;
+    }
+    const res = await invoke('process_image', { serial_number, file_path, width, height, testing}); // Same as before
     const ledMatrixSelector = `#led-matrix-${deviceNumber} .led`;
     const ledData = res;
     if (ledData) {
@@ -416,10 +514,18 @@ function handleMouseUp() {
 }
 
 async function updateLedColor(deviceNumber, index) {
-  const colorPicker = document.getElementById(`color-picker-${deviceNumber}`);
-  const color = colorPicker.value;
   const led = document.querySelector(`#led-matrix-${deviceNumber} .led[data-index="${index}"]`);
+  let color;
+
+  if (currentToolPerDevice[deviceNumber] === 'pencil') {
+    const colorPicker = document.getElementById(`color-picker-${deviceNumber}`);
+    color = colorPicker.value;
+  } else if (currentToolPerDevice[deviceNumber] === 'eraser') {
+    color = '#000000';
+  }
+
   led.style.backgroundColor = color;
+
   const r = parseInt(color.substr(1, 2), 16);
   const g = parseInt(color.substr(3, 2), 16);
   const b = parseInt(color.substr(5, 2), 16);
@@ -430,7 +536,6 @@ async function updateLedColor(deviceNumber, index) {
   };
 
   if (color !== '#000000') {
-    console.log(color);
     led.classList.add('active');
     led.style.setProperty('--led-glow-color', color); // Set the glow color
   } else {
@@ -468,6 +573,16 @@ function setupDeviceButtonEventListeners(deviceNumber) {
       alert('Failed to update firmware.');
     }
   });
+
+
+  const clearBoardButton = document.getElementById(`clear-board-${deviceNumber}`);
+  clearBoardButton.addEventListener('click', () => clearBoard(deviceNumber));
+
+  const pencilButton = document.getElementById(`pencil-tool-${deviceNumber}`);
+  pencilButton.addEventListener('click', () => selectTool(deviceNumber, 'pencil'));
+
+  const eraserButton = document.getElementById(`eraser-tool-${deviceNumber}`);
+  eraserButton.addEventListener('click', () => selectTool(deviceNumber, 'eraser'));
 
   
   
