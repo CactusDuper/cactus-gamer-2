@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 });
 
-function clearBoard(deviceNumber) {
+async function clearBoard(deviceNumber) {
   const leds = document.querySelectorAll(`#led-matrix-${deviceNumber} .led`);
   leds.forEach(led => {
     led.style.backgroundColor = '#000000';
@@ -317,8 +317,8 @@ function clearBoard(deviceNumber) {
   });
 
   // add rust clear
-  const clear_color = { r: 0, g: 0, b: 0 };
-  updateLedBuffer(deviceNumber, clear_color); // Update this with appropriate backend command
+  const serial_number = serialNumberFromDeviceNumber(deviceNumber); // Get the serial number from the device number
+  await invokeTauri('clear_board', { serial_number });
 }
 
 
@@ -367,7 +367,7 @@ function setupTestingDeviceButtonEventListeners(deviceNumber) {
 }
 
 async function createDeviceUI(deviceCount) {
-  createDevices(deviceCount + 1); // Devices and related windows will be created here
+  createDevices(deviceCount); // Devices and related windows will be created here
 
   // Check for and set up all devices
   for (let i = 1; i <= deviceCount; i++) {
@@ -375,9 +375,9 @@ async function createDeviceUI(deviceCount) {
     setupDeviceButtonEventListeners(i);
   }
 
-  const testingDeviceNumber = deviceCount + 1; // The testing device has the next number
-  createLedMatrix(testingDeviceNumber);
-  setupTestingDeviceButtonEventListeners(testingDeviceNumber);
+  // const testingDeviceNumber = deviceCount + 1; // The testing device has the next number
+  // createLedMatrix(testingDeviceNumber);
+  // setupTestingDeviceButtonEventListeners(testingDeviceNumber);
 }
 
 

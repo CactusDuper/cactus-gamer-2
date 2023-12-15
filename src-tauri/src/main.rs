@@ -224,7 +224,7 @@ fn update_led_buffer(serial_number: String, led_colors: &[Rgb]) -> Result<(), St
     }
 
     let mut buffers = LED_BUFFERS.lock().unwrap();
-    let led_buffer = buffers.get_mut(&serial_number).ok_or_else(|| "Buffer for device not found".to_string())?;
+    let led_buffer: &mut [u8; 528] = buffers.get_mut(&serial_number).ok_or_else(|| "Buffer for device not found".to_string())?;
 
     // Convert and copy the received colors into the LED buffer
     for (index, color) in led_colors.iter().enumerate() {
@@ -235,6 +235,38 @@ fn update_led_buffer(serial_number: String, led_colors: &[Rgb]) -> Result<(), St
     }
 
     // Retrieve stored device handle from the global mutex
+    with_device_handle(&serial_number, |device_handle| {
+        // Send the updated buffer to the device
+        device_handle
+            .write_control(
+                rusb::request_type(
+                    rusb::Direction::Out,
+                    rusb::RequestType::Vendor,
+                    rusb::Recipient::Device,
+                ),
+                REQ_SET_LED,
+                0,
+                0,
+                &*led_buffer,
+                Duration::from_secs_f32(1.0),
+            )
+            .map_err(|e| e.to_string())?;
+        Ok(())
+    })
+
+}
+
+#[tauri::command(rename_all = "snake_case")]
+fn clear_board(serial_number: String) -> Result<(), String> {
+
+    let mut buffers = LED_BUFFERS.lock().unwrap();
+    let led_buffer: &mut [u8; 528] = buffers.get_mut(&serial_number).ok_or_else(|| "Buffer for device not found".to_string())?;
+
+    // Iterate over led_buffer and set all values to 0
+    for i in 0..528 {
+        led_buffer[i] = 0;
+    }
+
     with_device_handle(&serial_number, |device_handle| {
         // Send the updated buffer to the device
         device_handle
@@ -381,7 +413,8 @@ fn main() {
             get_temperature,
             process_image,
             set_friendly_name,
-            get_friendly_names
+            get_friendly_names,
+            clear_board
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
