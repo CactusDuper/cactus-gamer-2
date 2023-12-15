@@ -1,7 +1,7 @@
-# Tauri + Vanilla
+# RGB PCIe card
 
-This template should help get you started developing with Tauri in vanilla HTML, CSS and Javascript.
+This repo contains all of the needed code to flash the rp2040 as well as the software for the computer you want to use the card with.
 
-## Recommended IDE Setup
+Some features are a WIP still, more testing needs to be done to make this a commercial product. Everything currently included in this repo has been tested and confirmed working.
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+Currently working on the overheating protection algorithm, it should be customizable by the user.
